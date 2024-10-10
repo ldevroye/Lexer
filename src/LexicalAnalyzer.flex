@@ -1,7 +1,7 @@
 /* Part1 : User Code (any Java code, that will be added at the beginning of the generated scanner) */
 
-    import LexicalUnit.java
-    import Symbol.java
+    import LexicalUnit.java;
+    import Symbol.java;
 %%
 
 /* Part2 : Options and declarations (some extra Java code included between %{ and %} can be generated, it will be copied verbatim inside the generated Java class (contrary to the code of the first part which appears outside of the class) + some ERE can be defined, they will be used as macros in part 3) */
