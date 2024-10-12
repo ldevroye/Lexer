@@ -10,6 +10,8 @@ import java.util.regex.PatternSyntaxException;
 %line
 %column
 %type Symbol
+%yylexthrow PatternSyntaxException
+%eofval{ return new Symbol(LexicalUnit.EOS, yyline, yycolumn); %eofval}
 
 // States
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS
@@ -21,10 +23,6 @@ Number                = [0-9]*
 //BadProgName           = [a-z][A-Za-z_]* // Invalid program name (case sensitive)
 //BadVarName            = [A-Z][A-Za-z0-9]* // Invalid variable name (case sensitive)
 WhiteSpace            = [ \t\r\n]+
-
-%yylexthrow PatternSyntaxException
-%eofval{ return new Symbol(LexicalUnit.EOS, yyline, yycolumn); %eofval}
-
 %%
 
 /* Part3 : Scanner rules (the core of the scanner, it is a series of rules that associate actions (in terms of Java code) to the regular expressions, each rule is of the form: Regex {Action} => Regex is an extended regular expression (ERE), that can use some of the regular expressions defined in part 2 as macros (using curly braces around their names); Action is a Java code snippet that will be executed each time a token matching Regex is found.) */
@@ -38,7 +36,7 @@ WhiteSpace            = [ \t\r\n]+
 <LONGCOMMENTS>{
     // End of long comments
     "!!"              { yybegin(YYINITIAL); }
-    <<EOF>>           { throw new PatternSyntexException("A long comment must be closed."); } // Throw exception when a long comment is never closed
+    <<EOF>>           { throw new PatternSyntexException("A long comment must be closed.", yytext(), yychar); } // Throw exception when a long comment is never closed
     .                 { } // Ignore characters in comments
 }
 
