@@ -1,6 +1,6 @@
 /* Part1 : User Code (any Java code, that will be added at the beginning of the generated scanner) */
     
-import java.util.regex.PatternSyntexException;
+import java.util.regex.PatternSyntaxException;
 %%
 
 /* Part2 : Options and declarations (some extra Java code included between %{ and %} can be generated, it will be copied verbatim inside the generated Java class (contrary to the code of the first part which appears outside of the class) + some ERE can be defined, they will be used as macros in part 3) */
@@ -18,10 +18,11 @@ import java.util.regex.PatternSyntexException;
 ProgName              = [A-Z][A-Za-z_]*
 VarName               = [a-z][A-Za-z0-9]*
 Number                = [0-9]*
-BadProgName           =
-BadVarName            = 
+//BadProgName           = [a-z][A-Za-z_]* // Invalid program name (case sensitive)
+//BadVarName            = [A-Z][A-Za-z0-9]* // Invalid variable name (case sensitive)
+WhiteSpace            = [ \t\r\n]+
 
-%yylexthrow PatternSyntexException
+%yylexthrow PatternSyntaxException
 %eofval{ return new Symbol(LexicalUnit.EOS, yyline, yycolumn); %eofval}
 
 %%
@@ -31,7 +32,7 @@ BadVarName            =
 // Comments tokens
 <SHORTCOMMENTS>{
     // End of short comments
-    {EndLine}         { yybegin(YYINITIAL); }
+    "\n"              { yybegin(YYINITIAL); }
     .                 { } // Ignore characters in comments
 }
 <LONGCOMMENTS>{
@@ -67,14 +68,14 @@ BadVarName            =
     "->"              { return new Symbol(LexicalUnit.IMPLIES, yyline, yycolumn, yytext()); }
     "|"               { return new Symbol(LexicalUnit.PIPE, yyline, yycolumn, yytext()); }
     "=="              { return new Symbol(LexicalUnit.EQUAL, yyline, yycolumn, yytext()); }
-    "&lt;="           { return new Symbol(LexicalUnit.SMALEQ, yyline, yycolumn, yytext()); }
-    "&lt;"            { return new Symbol(LexicalUnit.SMALLER, yyline, yycolumn, yytext()); }
+    "<="              { return new Symbol(LexicalUnit.SMALEQ, yyline, yycolumn, yytext()); }
+    "<"               { return new Symbol(LexicalUnit.SMALLER, yyline, yycolumn, yytext()); }
     WHILE             { return new Symbol(LexicalUnit.WHILE, yyline, yycolumn, yytext()); }
     REPEAT            { return new Symbol(LexicalUnit.REPEAT, yyline, yycolumn, yytext()); }
     OUT               { return new Symbol(LexicalUnit.OUTPUT, yyline, yycolumn, yytext()); }
     IN                { return new Symbol(LexicalUnit.INPUT, yyline, yycolumn, yytext()); }
     // BadVar and BADProg Names
-    // white space, tab, newlines must be ignore
-    // handle unmatched symbols
+    {WithSpace}       { } // white space, tab, newlines must be ignore
+    .                 { throw new PatternSyntaxException("Unrecognized character", yytext(), yychar); } // handle unmatched symbols
 }
 %%
