@@ -17,5 +17,5 @@ all:
 exec:
 	${exec}
 
-rm:
-	rm $(ClassLexer)
+clean:
+	rm -f $(ClassLexer) $(JavaLexer)
