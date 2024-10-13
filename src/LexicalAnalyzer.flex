@@ -6,11 +6,13 @@ import java.util.regex.PatternSyntaxException;
 %unicode
 %line
 %column
-%function nextToken
 %type Symbol
 %yylexthrow PatternSyntaxException
 %standalone
-%eof{ return new Symbol(LexicalUnit.EOS, yyline, yycolumn); %eof}
+
+%eofval{ 
+    return new Symbol(LexicalUnit.EOS, yyline, yycolumn); 
+%eofval}
 
 // States
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS
@@ -29,6 +31,7 @@ WhiteSpace            = [ \t\r\n]+
     "\n"              { yybegin(YYINITIAL); }
     .                 { } // Ignore characters in comments
 }
+
 <LONGCOMMENTS>{
     // End of long comments
     "!!"              { yybegin(YYINITIAL); }
