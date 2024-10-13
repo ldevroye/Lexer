@@ -11,7 +11,11 @@ import java.util.regex.PatternSyntaxException;
 %column
 %type Symbol
 %yylexthrow PatternSyntaxException
-%eofval{ return new Symbol(LexicalUnit.EOS, yyline, yycolumn); %eofval}
+%standalone
+
+%eofval{ 
+    return new Symbol(LexicalUnit.END_OF_STREAM, yyline, yycolumn);
+%eofval}
 
 // States
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS
@@ -73,7 +77,7 @@ WhiteSpace            = [ \t\r\n]+
     OUT               { return new Symbol(LexicalUnit.OUTPUT, yyline, yycolumn, yytext()); }
     IN                { return new Symbol(LexicalUnit.INPUT, yyline, yycolumn, yytext()); }
     // BadVar and BADProg Names
-    {WithSpace}       { } // white space, tab, newlines must be ignore
+    {WhiteSpace}       { } // white space, tab, newlines must be ignore
     .                 { throw new PatternSyntaxException("Unrecognized character", yytext(), yychar); } // handle unmatched symbols
 }
 %%
