@@ -1,18 +1,16 @@
 import java.util.regex.PatternSyntaxException;
 
-%%// Part2 : Options and declarations (some extra Java code included between %{ and %} can be generated, it will be copied verbatim inside the generated Java class (contrary to the code of the first part which appears outside of the class) + some ERE can be defined, they will be used as macros in part 3)
-
-%class LexicalAnalyzer
-%unicode
-%line
-%column
-%type Symbol
+%%// Options of the scanner
+%class LexicalAnalyzer // Name
+%unicode               // Use unicode
+%line                  
+%column                // Enable line and column counting
+%function nextToken    // Name of the function that returns the next token
+%type Symbol           // Tell JFlex to use the Symbol class
 %yylexthrow PatternSyntaxException
-%standalone
-
-%eofval{ 
+%eof{ 
     return new Symbol(LexicalUnit.EOS, yyline, yycolumn); 
-%eofval}
+%eof}
 
 // States
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS
@@ -21,9 +19,9 @@ import java.util.regex.PatternSyntaxException;
 ProgName              = [A-Z][A-Za-z_]*
 VarName               = [a-z][A-Za-z0-9]*
 Number                = [0-9]+
-WhiteSpace            = [ \t\r\n]+
+WhiteSpace            = (" "|"\t"|"\r"|"\n")
 
-%%// Part3 : Scanner rules (the core of the scanner, it is a series of rules that associate actions (in terms of Java code) to the regular expressions, each rule is of the form: Regex {Action} => Regex is an extended regular expression (ERE), that can use some of the regular expressions defined in part 2 as macros (using curly braces around their names); Action is a Java code snippet that will be executed each time a token matching Regex is found.)
+%% //Identification of tokens
 
 // Comments tokens
 <SHORTCOMMENTS>{
@@ -35,13 +33,13 @@ WhiteSpace            = [ \t\r\n]+
 <LONGCOMMENTS>{
     // End of long comments
     "!!"              { yybegin(YYINITIAL); }
-    <<EOF>>           { throw new PatternSyntaxException("A long comment must be closed.", yytext()); } // Throw exception when a long comment is never closed
+    <<EOF>>           { throw new PatternSyntaxException("A long comment must be closed.", yytext(), yychar); } // Throw exception when a long comment is never closed
     .                 { } // Ignore characters in comments
 }
 
 // Gilles keywords
 <YYINITIAL>{
-    "$"             { yybegin(SHORTCOMMENTS); } // Begin of short comments
+    "$"               { yybegin(SHORTCOMMENTS); } // Begin of short comments
     "!!"              { yybegin(LONGCOMMENTS); } // Begin of long comments
     {ProgName}$       { return new Symbol(LexicalUnit.PROGNAME, yyline, yycolumn, yytext()); } 
     {VarName}$        { return new Symbol(LexicalUnit.VARNAME, yyline, yycolumn, yytext()); }
@@ -71,7 +69,6 @@ WhiteSpace            = [ \t\r\n]+
     "REPEAT"          { return new Symbol(LexicalUnit.REPEAT, yyline, yycolumn, yytext()); }
     "OUT"             { return new Symbol(LexicalUnit.OUTPUT, yyline, yycolumn, yytext()); }
     "IN"              { return new Symbol(LexicalUnit.INPUT, yyline, yycolumn, yytext()); }
-    {WhiteSpace}$     { } // Ignore white space, tabs, newlines
-    .                 { throw new PatternSyntaxException("Unrecognized character", yytext()); } // Handle unmatched symbols
+    {WhiteSpace}+     { } // Ignore white space, tabs, newlines
+    .                 { throw new PatternSyntaxException("Unrecognized character", yytext(), yychar); } // Handle unmatched symbols
 }
-
