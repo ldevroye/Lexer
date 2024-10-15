@@ -26,15 +26,16 @@ flex = $(path_lexer).flex
 input = $(path_test)Euclid.gls
 
 
-## cmd
-exec = java $(lexer) $(input)
 
 all:
 	java -jar $(jar) $(flex)
 	javac $(JavaLexer) $(JavaSymbol) $(JavalexicalUnit)
-exec:
-	${exec}
+
+run: 
+	java -cp $(path_src) $(lexer) $(input)
+
 
 clean:
-	rm -f $(JavaLexer) $(ClassLexer) $(ClassLexicalUnit) $(ClassSymbol)
+## * is for .java- creeated sometimes
+	rm -f $(JavaLexer)* $(ClassLexer) $(ClassLexicalUnit) $(ClassSymbol) 
 	
