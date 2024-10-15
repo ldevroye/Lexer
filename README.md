@@ -6,7 +6,7 @@ Part 1 of the INFO-F403's project. Create a Lexer (Lexical Analyzer) using [JFle
 
 ## Authors
 -ldevroye
--gloriaakm (/glriakm)
+-gloriaakm
 
 ## OS
 The supported OS is Linux (ubuntu 20.0.4)
