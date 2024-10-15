@@ -1,22 +1,24 @@
 import java.util.regex.PatternSyntaxException;
 
 %%// Options of the scanner
+
 %class LexicalAnalyzer // Name
 %unicode               // Use unicode
 %line                  
 %column                // Enable line and column counting
-%function nextToken    // Name of the function that returns the next token
 %type Symbol           // Tell JFlex to use the Symbol class
-%yylexthrow PatternSyntaxException
-%eof{ 
+%standalone
+
+
+%eofval{ // value of eof
     return new Symbol(LexicalUnit.EOS, yyline, yycolumn); 
-%eof}
+%eofval}
 
 // States
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS
 
 // ERE
-ProgName              = [A-Z][A-Za-z_]*
+ProgName              = [A-Z][A-Za-z]*_
 VarName               = [a-z][A-Za-z0-9]*
 Number                = [0-9]+
 WhiteSpace            = (" "|"\t"|"\r"|"\n")
@@ -27,13 +29,13 @@ WhiteSpace            = (" "|"\t"|"\r"|"\n")
 <SHORTCOMMENTS>{
     // End of short comments
     "\n"              { yybegin(YYINITIAL); }
-    .                 { } // Ignore characters in comments
+    .                 { } // Ignore characters in comments 
 }
 
 <LONGCOMMENTS>{
     // End of long comments
     "!!"              { yybegin(YYINITIAL); }
-    <<EOF>>           { throw new PatternSyntaxException("A long comment must be closed.", yytext(), yychar); } // Throw exception when a long comment is never closed
+    <<EOF>>           { throw new PatternSyntaxException("Unrecognized character", yytext(), (int) yychar);} // end of file too early
     .                 { } // Ignore characters in comments
 }
 
@@ -70,5 +72,5 @@ WhiteSpace            = (" "|"\t"|"\r"|"\n")
     "OUT"             { return new Symbol(LexicalUnit.OUTPUT, yyline, yycolumn, yytext()); }
     "IN"              { return new Symbol(LexicalUnit.INPUT, yyline, yycolumn, yytext()); }
     {WhiteSpace}+     { } // Ignore white space, tabs, newlines
-    .                 { throw new PatternSyntaxException("Unrecognized character", yytext(), yychar); } // Handle unmatched symbols
+    .                 { throw new PatternSyntaxException("Unrecognized character", yytext(), (int) yychar);} // Handle unmatched symbols
 }
