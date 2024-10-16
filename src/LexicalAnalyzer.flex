@@ -33,7 +33,7 @@ WhiteSpace            = (" "|"\t"|"\r"|"\n") // White space, tab, newline
 <LONGCOMMENTS>{
     // End of long comments
     "!!"              { yybegin(YYINITIAL); } // Defines the end of a long comment
-    <<EOF>>           { throw new PatternSyntaxException("Unexpected end of file", yytext(), (int) yychar);} // end of file too early
+    <<EOF>>           { throw new PatternSyntaxException("Unexpected end of file", yytext(), (int) yychar);} // End of file too early
     .                 { } // Ignore characters in comments
 }
 
