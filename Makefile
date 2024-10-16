@@ -38,4 +38,3 @@ run:
 clean:
 ## * is for .java- creeated sometimes
 	rm -f $(JavaLexer)* $(ClassLexer) $(ClassLexicalUnit) $(ClassSymbol) 
-	
