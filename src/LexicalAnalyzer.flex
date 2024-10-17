@@ -43,7 +43,7 @@ import java.util.HashMap;
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS
 
 // ERE
-ProgName              = [A-Z][A-Za-z]*_[A-Za-z]* //TODO : check consistency
+ProgName              = [A-Z][A-Za-z]*(_[A-Za-z]+)+ //TODO : check consistency
 VarName               = [a-z][A-Za-z0-9]*
 Number                = [0-9]+
 WhiteSpace            = (" "|"\t"|"\r"|"\n")
