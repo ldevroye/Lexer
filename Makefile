@@ -13,33 +13,32 @@ lexical_unit = LexicalUnit
 main = Main
 
 path_lexer = $(path_src)$(lexer)
-path_symbol = $(path_src)$(symbol)
-path_lexical_unit = $(path_src)$(lexical_unit)
+path_main = $(path_src)$(main)
 
 ## files
-java_lexer = $(path_lexer).java
-java_symbol = $(path_symbol).java
-java_lexical_unit = $(path_lexical_unit).java
-java_main = $(path_src)$(main).java
-
 jar_main = $(path_dist)$(main).jar
+class_main = $(path_main).class
+all_java_src = $(path_src)*.java 
+
+## info for the .jar
+manifest = $(path_src)META-INF/MANIFEST.MF
 
 flex = $(path_lexer).flex
 input = $(path_test)Euclid.gls
 
-all: run-jar
+all: run_jar
 
 compile: 
 	java -jar $(jar) $(flex)
-	javac $(java_lexer) $(java_symbol) $(java_lexical_unit)
+	javac $(all_java_src)
 
 doc: compile
-	javadoc -d $(path_doc) $(path_src)*.java
+	javadoc -d $(path_doc) $(all_java_src)
 
 jar: compile
-	jar -c $(jar_main) -f $(java_main) -C $(path_src)
+	jar cmf $(manifest) $(jar_main) $(path_main).java
 
-run-jar: jar
+run_jar: jar
 	java -jar $(jar_main)
 
 run: compile
@@ -47,5 +46,5 @@ run: compile
 
 clean:
 ## the 1st * is for the .java~ sometimes created
-	rm -f -r $(java_lexer)* $(path_src)*.class $(path_doc)*
+	rm -f -r $(path_lexer).java* $(path_src)*.class $(path_doc)* $(jar_main)
 
