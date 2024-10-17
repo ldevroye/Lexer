@@ -1,4 +1,5 @@
 import java.util.regex.PatternSyntaxException;
+import java.util.HashMap;
 
 %%// Options of the scanner
 
@@ -11,14 +12,38 @@ import java.util.regex.PatternSyntaxException;
 
 
 %eofval{ // value of eof
+    PrintVarMap();
     return new Symbol(LexicalUnit.EOS, yyline, yycolumn); 
 %eofval}
+
+// couting of var's 1st encounter
+%{ // Java code
+    HashMap<String, Integer> variableMap = new HashMap<>();
+
+    public void TryAddVar(String name, int index)
+    {
+        if(!variableMap.containsKey(name))
+        {
+            variableMap.put(name, index);
+        }
+    }
+
+    public void PrintVarMap()
+    {
+        System.out.println("Variables");
+
+        for (String key : variableMap.keySet())
+        {
+            System.out.printf("%s %d\n", key, variableMap.get(key));
+        }
+    }
+%}
 
 // States
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS
 
 // ERE
-ProgName              = [A-Z][A-Za-z]*_
+ProgName              = [A-Z][A-Za-z]*_[A-Za-z]* //TODO : check consistency
 VarName               = [a-z][A-Za-z0-9]*
 Number                = [0-9]+
 WhiteSpace            = (" "|"\t"|"\r"|"\n")
@@ -43,9 +68,12 @@ WhiteSpace            = (" "|"\t"|"\r"|"\n")
 <YYINITIAL>{
     "$"               { yybegin(SHORTCOMMENTS); } // Begin of short comments
     "!!"              { yybegin(LONGCOMMENTS); } // Begin of long comments
-    {ProgName}       { System.out.println("ProgName: " + yytext()); return new Symbol(LexicalUnit.PROGNAME, yyline, yycolumn, yytext()); } 
-    {VarName}        { System.out.println("VarName: " + yytext()); return new Symbol(LexicalUnit.VARNAME, yyline, yycolumn, yytext()); }
-    {Number}         { System.out.println("Number: " + yytext()); return new Symbol(LexicalUnit.NUMBER, yyline, yycolumn, Integer.valueOf(yytext())); } 
+    {ProgName}        { System.out.println("ProgName: " + yytext()); return new Symbol(LexicalUnit.PROGNAME, yyline, yycolumn, yytext()); } 
+    {VarName}         { System.out.println("VarName: " + yytext()); 
+                        TryAddVar(yytext(), yyline); // Adding the var to the dict
+                        return new Symbol(LexicalUnit.VARNAME, yyline, yycolumn, yytext()); } 
+
+    {Number}          { System.out.println("Number: " + yytext()); return new Symbol(LexicalUnit.NUMBER, yyline, yycolumn, Integer.valueOf(yytext())); } 
     "LET"             { System.out.println("LET: " + yytext()); return new Symbol(LexicalUnit.LET, yyline, yycolumn, yytext()); }
     "BE"              { System.out.println("BE: " + yytext()); return new Symbol(LexicalUnit.BE, yyline, yycolumn, yytext()); }
     "END"             { System.out.println("END: " + yytext()); return new Symbol(LexicalUnit.END, yyline, yycolumn, yytext()); }

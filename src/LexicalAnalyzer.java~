@@ -3,6 +3,7 @@
 // source: src/LexicalAnalyzer.flex
 
 import java.util.regex.PatternSyntaxException;
+import java.util.HashMap;
 
 
 @SuppressWarnings("fallthrough")
@@ -134,10 +135,10 @@ class LexicalAnalyzer {
     "\0\170\0\170\0\170\0\170\0\360\0\170\0\u0118\0\170"+
     "\0\u0140\0\u0168\0\u0190\0\u01b8\0\u01e0\0\u0208\0\u0230\0\u0258"+
     "\0\u0280\0\u02a8\0\u02d0\0\u02f8\0\170\0\170\0\170\0\170"+
-    "\0\170\0\u0320\0\170\0\170\0\170\0\170\0\u0190\0\170"+
-    "\0\u0190\0\u0348\0\u0370\0\u0190\0\u0190\0\u0398\0\u03c0\0\u03e8"+
-    "\0\u0410\0\u0438\0\u0460\0\u0190\0\u0190\0\u0190\0\u0488\0\u04b0"+
-    "\0\u04d8\0\u0190\0\u0500\0\u0190\0\u0528\0\u0550\0\u0190\0\u0190";
+    "\0\170\0\u0320\0\170\0\170\0\170\0\170\0\u0190\0\u0348"+
+    "\0\u0190\0\u0370\0\u0398\0\u0190\0\u0190\0\u03c0\0\u03e8\0\u0410"+
+    "\0\u0438\0\u0460\0\u0488\0\u0190\0\u0190\0\u0190\0\u04b0\0\u04d8"+
+    "\0\u0500\0\u0190\0\u0528\0\u0190\0\u0550\0\u0578\0\u0190\0\u0190";
 
   private static int [] zzUnpackRowMap() {
     int [] result = new int[64];
@@ -178,20 +179,21 @@ class LexicalAnalyzer {
     "\4\47\1\60\14\47\1\50\1\47\25\0\6\47\1\61"+
     "\12\47\1\50\1\47\25\0\6\47\1\62\12\47\1\50"+
     "\1\47\20\0\1\34\4\0\21\34\1\0\1\34\10\0"+
-    "\1\41\64\0\15\47\1\63\3\47\1\50\1\47\25\0"+
-    "\3\47\1\64\15\47\1\50\1\47\25\0\16\47\1\65"+
-    "\2\47\1\50\1\47\25\0\16\47\1\66\2\47\1\50"+
-    "\1\47\25\0\13\47\1\67\5\47\1\50\1\47\25\0"+
-    "\4\47\1\70\14\47\1\50\1\47\25\0\7\47\1\71"+
-    "\11\47\1\50\1\47\25\0\4\47\1\72\14\47\1\50"+
-    "\1\47\25\0\4\47\1\73\14\47\1\50\1\47\25\0"+
-    "\11\47\1\74\7\47\1\50\1\47\25\0\10\47\1\75"+
-    "\10\47\1\50\1\47\25\0\1\76\20\47\1\50\1\47"+
-    "\25\0\4\47\1\77\14\47\1\50\1\47\25\0\16\47"+
-    "\1\100\2\47\1\50\1\47\3\0";
+    "\1\41\64\0\21\50\1\0\1\50\25\0\15\47\1\63"+
+    "\3\47\1\50\1\47\25\0\3\47\1\64\15\47\1\50"+
+    "\1\47\25\0\16\47\1\65\2\47\1\50\1\47\25\0"+
+    "\16\47\1\66\2\47\1\50\1\47\25\0\13\47\1\67"+
+    "\5\47\1\50\1\47\25\0\4\47\1\70\14\47\1\50"+
+    "\1\47\25\0\7\47\1\71\11\47\1\50\1\47\25\0"+
+    "\4\47\1\72\14\47\1\50\1\47\25\0\4\47\1\73"+
+    "\14\47\1\50\1\47\25\0\11\47\1\74\7\47\1\50"+
+    "\1\47\25\0\10\47\1\75\10\47\1\50\1\47\25\0"+
+    "\1\76\20\47\1\50\1\47\25\0\4\47\1\77\14\47"+
+    "\1\50\1\47\25\0\16\47\1\100\2\47\1\50\1\47"+
+    "\3\0";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[1400];
+    int [] result = new int[1440];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -235,9 +237,9 @@ class LexicalAnalyzer {
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\3\0\1\11\1\1\1\11\1\1\5\11\1\1\1\11"+
-    "\1\1\1\11\14\1\5\11\1\1\4\11\1\0\1\11"+
-    "\1\1\2\0\2\1\6\0\3\1\3\0\1\1\1\0"+
-    "\1\1\2\0\2\1";
+    "\1\1\1\11\14\1\5\11\1\1\4\11\1\0\2\1"+
+    "\2\0\2\1\6\0\3\1\3\0\1\1\1\0\1\1"+
+    "\2\0\2\1";
 
   private static int [] zzUnpackAttribute() {
     int [] result = new int[64];
@@ -316,6 +318,27 @@ class LexicalAnalyzer {
   /** Whether the user-EOF-code has already been executed. */
   @SuppressWarnings("unused")
   private boolean zzEOFDone;
+
+  /* user code: */
+    HashMap<String, Integer> variableMap = new HashMap<>();
+
+    public void TryAddVar(String name, int index)
+    {
+        if(!variableMap.containsKey(name))
+        {
+            variableMap.put(name, index);
+        }
+    }
+
+    public void PrintVarMap()
+    {
+        System.out.println("Variables");
+
+        for (String key : variableMap.keySet())
+        {
+            System.out.printf("%s %d\n", key, variableMap.get(key));
+        }
+    }
 
 
   /**
@@ -730,7 +753,8 @@ class LexicalAnalyzer {
             }  // fall though
             case 65: break;
             default:
-          {     return new Symbol(LexicalUnit.EOS, yyline, yycolumn); 
+          {     PrintVarMap();
+    return new Symbol(LexicalUnit.EOS, yyline, yycolumn); 
  }
         }
       }
@@ -807,7 +831,9 @@ class LexicalAnalyzer {
           // fall through
           case 48: break;
           case 15:
-            { System.out.println("VarName: " + yytext()); return new Symbol(LexicalUnit.VARNAME, yyline, yycolumn, yytext());
+            { System.out.println("VarName: " + yytext()); 
+                        TryAddVar(yytext(), yyline); // Adding the var to the dict
+                        return new Symbol(LexicalUnit.VARNAME, yyline, yycolumn, yytext());
             }
           // fall through
           case 49: break;

@@ -36,12 +36,12 @@ doc: compile
 	javadoc -d $(path_doc) $(all_java_src)
 
 jar: compile
-	jar cmf $(manifest) $(jar_main) $(path_main).java
+	jar cmf $(manifest) $(jar_main) $(all_java_src)
 
 run_jar: jar
 	java -jar $(jar_main)
 
-run: compile
+run:
 	java -cp $(path_src) $(lexer) $(input)
 
 clean:
