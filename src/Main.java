@@ -20,18 +20,19 @@ public class Main {
      * @throws FileNotFoundException if the file is not found
      *
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, FileNotFoundException {
         if (args.length != 1) {
-            System.err.println("Usage: java Main <sourceFile.gls>");
+            System.err.println("Usage: java -cp src src/Main.java <sourceFile.gls>");
             return;
         }
 
         FileReader reader = new FileReader(args[0]); // Open the source file given as argument
         LexicalAnalyzer lexer = new LexicalAnalyzer(reader); // Create the lexical analyzer using JFlex
         
-        while (!lexer.yyatEOF()) { // While the end of the file is not reached, analyze the file and print the lexical units
-            LexicalUnit token = lexer.yylex();
-            System.out.println("Lexical Unit: " + token);
+        Symbol symbol = lexer.nextToken();
+        while (!symbol.getType().equals(LexicalUnit.EOS)) { // While the end of the file is not reached, analyze the file and print the lexical units
+            System.out.println(symbol.toString());
+            symbol = lexer.nextToken();
         }
         
         // Affichez la table des symboles (à implémenter)

@@ -8,6 +8,7 @@ import java.util.regex.PatternSyntaxException;
 %column                // Enable column counting
 %type Symbol           // Tell JFlex to use the Symbol class
 %standalone            // Standalone scanner
+%function nextToken    // Name of the function that will be called in the parser and return the next token
 %eofval{ // value of eof (handle end of file)
     return new Symbol(LexicalUnit.EOS, yyline, yycolumn); 
 %eofval}
