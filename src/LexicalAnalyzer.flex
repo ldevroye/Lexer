@@ -18,13 +18,14 @@ import java.util.HashMap;
 
 // couting of var's 1st encounter
 %{ // Java code
+    int emptyLine = 0; 
     HashMap<String, Integer> variableMap = new HashMap<>();
 
     public void TryAddVar(String name, int index)
     {
         if(!variableMap.containsKey(name))
         {
-            variableMap.put(name, index);
+            variableMap.put(name, index+emptyLine);
         }
     }
 
@@ -43,10 +44,11 @@ import java.util.HashMap;
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS
 
 // ERE
-ProgName              = [A-Z][A-Za-z]*(_[A-Za-z]+)+ //TODO : check consistency
+ProgName              = [A-Z][A-Za-z]*(_[A-Za-z]+)+
 VarName               = [a-z][A-Za-z0-9]*
 Number                = [0-9]+
-WhiteSpace            = (" "|"\t"|"\r"|"\n")
+WhiteSpace            = (" "|"\t")
+EmptyLine             = ("\r"|"\n")("\r"|"\n") // two return in a row
 
 %% //Identification of tokens
 
@@ -99,6 +101,7 @@ WhiteSpace            = (" "|"\t"|"\r"|"\n")
     "REPEAT"          { System.out.println("REPEAT: " + yytext()); return new Symbol(LexicalUnit.REPEAT, yyline, yycolumn, yytext()); }
     "OUT"             { System.out.println("OUTPUT: " + yytext());return new Symbol(LexicalUnit.OUTPUT, yyline, yycolumn, yytext()); }
     "IN"              { System.out.println("INPUT: " + yytext()); return new Symbol(LexicalUnit.INPUT, yyline, yycolumn, yytext()); }
-    {WhiteSpace}+     { } // Ignore white space, tabs, newlines
+    {WhiteSpace}      { } // Ignore white space, tabs
+    {EmptyLine}       { emptyLine += 1;} // Add line to counter if empty
     .                 { throw new PatternSyntaxException("Unrecognized character", yytext(), (int) yychar);} // Handle unmatched symbols
 }
