@@ -67,7 +67,7 @@ public class Main {
         System.out.println("\nVariables");
         // Content of the symbol table with the variables and the number of the line where they were first encountered
         for (String key : symbolTable.keySet()) {
-            System.out.println(key + " " + symbolTable.get(key).getLine());
+            System.out.println(key + "\t" + symbolTable.get(key).getLine());
         }
     }
 }
