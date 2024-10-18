@@ -4,7 +4,7 @@ jar = ./more/jflex-1.9.1/lib/jflex-full-1.9.1.jar
 # Path & files names
 path_src = src/
 path_test = test/
-path_doc = doc/javadoc/
+path_doc = doc/
 path_dist = dist/
 path_more = more/
 
@@ -20,13 +20,8 @@ path_lexical_unit = $(path_src)$(lexical_unit)
 path_main = $(path_src)$(main)
 
 jar_main = $(path_dist)part1.jar
-class_main = $(path_main).class
 
 # Files
-javalexer = $(path_lexer).java
-javasymbol = $(path_symbol).java
-javalexunit = $(path_lexical_unit).java
-javamain = $(main).java
 all_java_src = $(path_src)*.java
 
 # Info for the .jar

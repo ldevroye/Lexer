@@ -17,10 +17,10 @@ import java.util.regex.PatternSyntaxException;
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS 
 
 // ERE
-ProgName              = [A-Z][A-Za-z]*(_[A-Za-z]+)+ // String of letters and _ starting with a capital letter
+ProgName              = [A-Z][A-Za-z_]* // String of letters and _ starting with a capital letter
 VarName               = [a-z][A-Za-z0-9]* // String of letters and digits starting with a lowercase letter
 Number                = [0-9]+ // String of digits only
-WhiteSpace            = (" "|"\t"|"\r"|"\n") // White space, tab, newline
+WhiteSpace            = (" "|"\t"|"\r"|"\n")+ // White space, tab, newline
 
 %% //Identification of tokens
 
@@ -42,9 +42,6 @@ WhiteSpace            = (" "|"\t"|"\r"|"\n") // White space, tab, newline
 <YYINITIAL>{
     "$"               { yybegin(SHORTCOMMENTS); } // Begin of short comments
     "!!"              { yybegin(LONGCOMMENTS); } // Begin of long comments
-    {ProgName}        { return new Symbol(LexicalUnit.PROGNAME, yyline, yycolumn, yytext()); } 
-    {VarName}         { return new Symbol(LexicalUnit.VARNAME, yyline, yycolumn, yytext()); }
-    {Number}          { return new Symbol(LexicalUnit.NUMBER, yyline, yycolumn, Integer.valueOf(yytext())); } 
     "LET"             { return new Symbol(LexicalUnit.LET, yyline, yycolumn, yytext()); }
     "BE"              { return new Symbol(LexicalUnit.BE, yyline, yycolumn, yytext()); }
     "END"             { return new Symbol(LexicalUnit.END, yyline, yycolumn, yytext()); }
@@ -70,6 +67,9 @@ WhiteSpace            = (" "|"\t"|"\r"|"\n") // White space, tab, newline
     "REPEAT"          { return new Symbol(LexicalUnit.REPEAT, yyline, yycolumn, yytext()); }
     "OUT"             { return new Symbol(LexicalUnit.OUTPUT, yyline, yycolumn, yytext()); }
     "IN"              { return new Symbol(LexicalUnit.INPUT, yyline, yycolumn, yytext()); }
-    {WhiteSpace}+     { } // Ignore white spaces, tabs, newlines
+    {ProgName}        { return new Symbol(LexicalUnit.PROGNAME, yyline, yycolumn, yytext()); } 
+    {VarName}         { return new Symbol(LexicalUnit.VARNAME, yyline, yycolumn, yytext()); }
+    {Number}          { return new Symbol(LexicalUnit.NUMBER, yyline, yycolumn, Integer.valueOf(yytext())); } 
+    {WhiteSpace}      { } // Ignore white spaces, tabs, newlines
     .                 { throw new PatternSyntaxException("Unrecognized character", yytext(), (int) yychar);} // Handle unmatched symbols
 }
