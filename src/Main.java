@@ -1,11 +1,12 @@
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.util.TreeMap;
 
 /*
  * Project Part 1 : Lexical Analysis
  * 
- * @autor: 	Akli-Kodjo-Mensah Gloria, xxxxxxxx
+ * @autor: 	Akli-Kodjo-Mensah Gloria, Devroye Louis
  * 
  */
 
@@ -30,12 +31,25 @@ public class Main {
         LexicalAnalyzer lexer = new LexicalAnalyzer(reader); // Create the lexical analyzer using JFlex
         
         Symbol symbol = lexer.nextToken();
+        TreeMap<String, Symbol> symbolTable = new TreeMap<String, Symbol>(); // Create the symbol table
+        
         while (!symbol.getType().equals(LexicalUnit.EOS)) { // While the end of the file is not reached, analyze the file and print the lexical units
             System.out.println(symbol.toString());
+
+            // Add the variable to the symbol table
+            if(symbol.getType().equals(LexicalUnit.VARNAME)){
+                if(!symbolTable.containsKey(symbol.getValue())) {
+                    symbolTable.put(symbol.getValue().toString(), symbol);
+                }
+            }
+            
             symbol = lexer.nextToken();
         }
-        
-        // Affichez la table des symboles (à implémenter)
-        // symbolTable.print();
+
+        System.out.println("\nVariables");
+        // Content of the symbol table with the variables and the number of the line where they were first encountered
+        for (String key : symbolTable.keySet()) {
+            System.out.println(key + " " + symbolTable.get(key).getLine());
+        }
     }
 }

@@ -17,7 +17,7 @@ import java.util.regex.PatternSyntaxException;
 %xstate YYINITIAL, SHORTCOMMENTS, LONGCOMMENTS 
 
 // ERE
-ProgName              = [A-Z][A-Za-z]*_ // String of letters and _ starting with a capital letter
+ProgName              = [A-Z][A-Za-z]*(_[A-Za-z]+)+ // String of letters and _ starting with a capital letter
 VarName               = [a-z][A-Za-z0-9]* // String of letters and digits starting with a lowercase letter
 Number                = [0-9]+ // String of digits only
 WhiteSpace            = (" "|"\t"|"\r"|"\n") // White space, tab, newline
