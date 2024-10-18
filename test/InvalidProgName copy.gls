@@ -1,4 +1,0 @@
-LET invalidProgName BE 
-    a = 5:
-    b = a + 3:
-END
