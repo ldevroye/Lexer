@@ -27,7 +27,7 @@ javalexer = $(path_lexer).java
 javasymbol = $(path_symbol).java
 javalexunit = $(path_lexical_unit).java
 javamain = $(main).java
-all_java_src_compile = $(javalexer) $(javasymbol) $(javalexunit)
+all_java_src = $(path_src)*.java
 
 # Info for the .jar
 path_manifest = $(path_more)$(manifest).txt
@@ -35,17 +35,17 @@ path_manifest = $(path_more)$(manifest).txt
 flex = $(path_lexer).flex
 input = $(path_test)Euclid.gls
 
-all: run_jar
+all: jar
 
 compile: 
 	java -jar $(jar) $(flex)
-	javac $(all_java_src_compile)
-	javac -d src src/*.java
+	javac $(all_java_src)
 
 doc: compile
-	javadoc -d $(path_doc) $(all_java_src_compile)
+	javadoc -d $(path_doc) $(all_java_src)
 
 jar: compile
+
 # Create the manifest file
 	echo "Main-Class: $(main)" > $(path_manifest)
 # Create the .jar to run the program
