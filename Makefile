@@ -1,41 +1,62 @@
-## jflex jar path
+# Jflex jar path
 jar = ./more/jflex-1.9.1/lib/jflex-full-1.9.1.jar
 
-## path & files' name
-path_src = ./src/
-path_test = ./test/
+# Path & files names
+path_src = src/
+path_test = test/
+path_doc = doc/javadoc/
+path_dist = dist/
+path_more = more/
 
 lexer = LexicalAnalyzer
 symbol = Symbol
 lexical_unit = LexicalUnit
+main = Main
+manifest = manifest
 
 path_lexer = $(path_src)$(lexer)
 path_symbol = $(path_src)$(symbol)
 path_lexical_unit = $(path_src)$(lexical_unit)
+path_main = $(path_src)$(main)
 
-## files
-JavaLexer = $(path_lexer).java
-JavaSymbol = $(path_symbol).java
-JavalexicalUnit = $(path_lexical_unit).java
+jar_main = $(path_dist)part1.jar
+class_main = $(path_main).class
 
-ClassLexer = $(path_lexer).class
-ClassSymbol = $(path_symbol).class
-ClassLexicalUnit = $(path_lexical_unit).class
+# Files
+javalexer = $(path_lexer).java
+javasymbol = $(path_symbol).java
+javalexunit = $(path_lexical_unit).java
+javamain = $(main).java
+all_java_src = $(path_src)*.java
+
+# Info for the .jar
+path_manifest = $(path_more)$(manifest).txt
 
 flex = $(path_lexer).flex
 input = $(path_test)Euclid.gls
 
+all: jar
 
-
-all:
+compile: 
 	java -jar $(jar) $(flex)
-	javac $(JavaLexer) $(JavaSymbol) $(JavalexicalUnit)
+	javac $(all_java_src)
 
-run: 
-	java -cp $(path_src) $(lexer) $(input)
+doc: compile
+	javadoc -d $(path_doc) $(all_java_src)
 
+jar: compile
+
+# Create the manifest file
+	echo "Main-Class: $(main)" > $(path_manifest)
+# Create the .jar to run the program
+	jar cfm $(jar_main) $(path_manifest) -C $(path_src) .
+
+run_jar: jar
+	java -jar $(jar_main) $(input)
+
+run: compile
+	java -cp $(path_src) $(main) $(input)
 
 clean:
-## * is for .java- creeated sometimes
-	rm -f $(JavaLexer)* $(ClassLexer) $(ClassLexicalUnit) $(ClassSymbol) 
-	
+# The 1st * is for the .java~ sometimes created
+	rm -f -r $(path_lexer).java* $(path_src)*.class $(path_doc)* $(jar_main) $(path_manifest) $(jar_main)
