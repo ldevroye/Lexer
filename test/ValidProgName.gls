@@ -1,9 +1,9 @@
-LET Valid_ProgName_UsingAllValidCharacters BE
+LET Valid_ProgName_usingAllValidCharacters BE
     var1 = 50:
     var2 = var1 - 20:
 END
 
-LET Another_Valid_ProgName_ BE
+LET Another__Valid_progName___ BE
     var1 = -10:
     var2 = var1 - 20:
 END

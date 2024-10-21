@@ -7,7 +7,7 @@ import java.util.regex.PatternSyntaxException;
 /**
  * Project Part 1 : Lexical Analysis
  * 
- * @autor: 	Akli-Kodjo-Mensah Gloria, Devroye Louis
+ * @author : Akli-Kodjo-Mensah Gloria, Devroye Louis
  * 
  */
 public class Main {

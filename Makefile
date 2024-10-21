@@ -28,7 +28,7 @@ all_java_src = $(path_src)*.java
 path_manifest = $(path_more)$(manifest).txt
 
 flex = $(path_lexer).flex
-input = $(path_test)Euclid.gls
+input = $(path_test)ValidProgName.gls
 
 all: jar
 
