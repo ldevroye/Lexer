@@ -4,7 +4,7 @@ jar = ./more/jflex-1.9.1/lib/jflex-full-1.9.1.jar
 # Path & files names
 path_src = src/
 path_test = test/
-path_doc = doc/
+path_doc = doc/javadoc/
 path_dist = dist/
 path_more = more/
 
@@ -40,7 +40,6 @@ doc: compile
 	javadoc -d $(path_doc) $(all_java_src)
 
 jar: compile
-
 # Create the manifest file
 	echo "Main-Class: $(main)" > $(path_manifest)
 # Create the .jar to run the program
