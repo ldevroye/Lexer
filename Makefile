@@ -28,7 +28,7 @@ all_java_src = $(path_src)*.java
 path_manifest = $(path_more)$(manifest).txt
 
 flex = $(path_lexer).flex
-input = $(path_test)ValidProgName.gls
+input = $(path_test)Euclid.gls
 
 all: jar
 
@@ -51,6 +51,14 @@ run_jar: jar
 
 run: compile
 	java -cp $(path_src) $(main) $(input)
+
+test: compile
+# Run the main program for all the test files on the test folder
+	for file in $(path_test)*.gls; do \
+		echo $$file; \
+		java -cp $(path_src) $(main) $$file; \
+		echo; \
+	done
 
 clean:
 # The 1st * is for the .java~ sometimes created
